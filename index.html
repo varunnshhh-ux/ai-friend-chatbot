@@ -1,135 +1,943 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    
-    <!-- Primary Page Metadata -->
-    <title>Aura AI — Your Personal AI Companion, Friend &amp; Guide</title>
-    <meta
-      name="description"
-      content="A modern, emotionally intelligent AI companion with persistent personal memory, real-time mood awareness, singing &amp; music composition, and hands-free voice interaction."
-    />
-    <meta name="keywords" content="AI Companion, AI Friend, Emotional AI, Chatbot, Voice AI, Next.js, React, Gemini AI, Personal Memory" />
-    <meta name="author" content="Varun Sharma" />
-    <meta name="robots" content="index, follow" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  
+  <!-- Primary Page Metadata -->
+  <title>Aura AI — Your Personal AI Companion, Friend &amp; Guide</title>
+  <meta name="description" content="A modern, emotionally intelligent AI companion with persistent personal memory, real-time mood awareness, singing &amp; music composition, and hands-free voice interaction." />
+  <meta name="keywords" content="AI Companion, AI Friend, Emotional AI, Chatbot, Voice AI, Next.js, React, Gemini AI, Personal Memory" />
+  <meta name="author" content="Varun Sharma" />
+  <meta name="robots" content="index, follow" />
 
-    <!-- Theme & Mobile App Configuration -->
-    <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
-    <meta name="application-name" content="Aura AI" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Aura AI" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="format-detection" content="telephone=no" />
+  <!-- Theme & Mobile Configuration -->
+  <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Aura AI" />
 
-    <!-- Favicon & Icons -->
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="apple-touch-icon" href="/favicon.ico" />
+  <!-- Open Graph & Social Cards -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Aura AI — Your Personal AI Companion, Friend &amp; Guide" />
+  <meta property="og:description" content="A warm, empathetic AI friend and guide with persistent long-term memory, mood awareness, original song synthesis, and voice conversations." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Open Graph (Facebook / LinkedIn / Discord / Slack) -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://github.com/varunnshhh-ux/ai-friend-chatbot" />
-    <meta property="og:site_name" content="Aura AI" />
-    <meta property="og:title" content="Aura AI — Your Personal AI Companion, Friend &amp; Guide" />
-    <meta
-      property="og:description"
-      content="A warm, empathetic AI friend and guide with persistent long-term memory, mood awareness, original song synthesis, and voice conversations."
-    />
-    <meta property="og:image" content="/og-image.png" />
-    <meta property="og:locale" content="en_US" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-    <!-- Twitter / X Cards -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Aura AI — Your Personal AI Companion, Friend &amp; Guide" />
-    <meta
-      name="twitter:description"
-      content="An emotionally aware AI companion with structured memory, voice interaction, and music generation."
-    />
-    <meta name="twitter:image" content="/og-image.png" />
-    <meta name="twitter:creator" content="@varunsharma" />
+  <!-- React 18, ReactDOM, Babel & Tailwind CDN for 100% standalone direct execution -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts Preconnect & Stylesheets -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            heading: ['Outfit', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            aura: {
+              500: '#6366f1',
+              600: '#4f46e5',
+            }
+          }
+        }
+      }
+    };
+  </script>
 
-    <style>
-      :root {
-        --bg-dark: #090d16;
-        --text-light: #f1f5f9;
-        --accent-indigo: #6366f1;
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --card-dark: rgba(15, 23, 42, 0.75);
+      --border-dark: rgba(51, 65, 85, 0.4);
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .ambient-glow-mesh {
+      background: radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 85%, rgba(244, 63, 94, 0.08) 0%, transparent 45%),
+                  radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 60%);
+    }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.4);
+    }
+    .glass-dropdown {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.6); }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-8px) scale(1.05); }
+    }
+    .animate-float { animation: floatOrb 4s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+  <div id="root"></div>
+
+  <!-- Standalone React 18 Application Script (Babel compiled on-the-fly for file:// & HTTP) -->
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo } = React;
+
+    // ==========================================
+    // 1. DATA MODELS & CONSTANTS
+    // ==========================================
+    const MOOD_META = {
+      happy: { label: 'Joyful & Happy', emoji: '✨', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30' },
+      excited: { label: 'Hyped & Excited', emoji: '🚀', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30' },
+      sad: { label: 'Down / Vulnerable', emoji: '💙', color: 'text-sky-400', bg: 'bg-sky-500/10', border: 'border-sky-500/30' },
+      stressed: { label: 'Overwhelmed & Stressed', emoji: '🌿', color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/30' },
+      lonely: { label: 'Seeking Warmth', emoji: '🫂', color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/30' },
+      angry: { label: 'Frustrated / Heated', emoji: '🔥', color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/30' },
+      confused: { label: 'Curious / Wondering', emoji: '💡', color: 'text-indigo-400', bg: 'bg-indigo-500/10', border: 'border-indigo-500/30' },
+      anxious: { label: 'Restless / Nervous', emoji: '🕊️', color: 'text-teal-400', bg: 'bg-teal-500/10', border: 'border-teal-500/30' },
+      neutral: { label: 'Calm & Steady', emoji: '💫', color: 'text-zinc-400', bg: 'bg-zinc-500/10', border: 'border-zinc-500/30' },
+    };
+
+    const PERSONA_META = {
+      friend: { name: 'Friend Mode', tag: 'Empathetic & Casual', description: 'A genuine, supportive friend who talks naturally, listens deeply, and cheers you up.', emoji: '🌟' },
+      study: { name: 'Study Guide', tag: 'Patient & Clear', description: 'Explains complex topics with intuitive analogies, structured summaries, and recall quizzes.', emoji: '📚' },
+      coding: { name: 'Coding Buddy', tag: 'Senior Dev Pair', description: 'Writes production-clean code, explains architecture, debugs issues, and refactors.', emoji: '💻' },
+      career: { name: 'Career Mentor', tag: 'Strategic & Wise', description: 'Gives actionable advice on career growth, resumes, interviews, and life choices.', emoji: '💼' },
+      creative: { name: 'Creative Spark', tag: 'Inventive & Poetic', description: 'Brainstorms fresh ideas, crafts stories, writes poetry, and sparks imagination.', emoji: '🎨' },
+      professional: { name: 'Executive / Serious', tag: 'Crisp & Objective', description: 'Delivers concise, high-signal, professional briefings without extra banter.', emoji: '👔' },
+    };
+
+    const DEFAULT_MEMORIES = [
+      { id: 'mem-1', category: 'interest', content: 'Loves technology, creative learning, and exploring new AI ideas', importance: 4, createdAt: new Date().toISOString(), tags: ['ai', 'tech'] },
+      { id: 'mem-2', category: 'preference', content: 'Appreciates friendly, warm, empathetic, and intellectually honest conversation', importance: 5, createdAt: new Date().toISOString(), tags: ['tone'] }
+    ];
+
+    const DEFAULT_CONVERSATIONS = [
+      {
+        id: 'conv-welcome',
+        title: '🌟 Welcome to Aura AI',
+        persona: 'friend',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        isPinned: true,
+        messageCount: 1,
+        lastMood: 'happy',
       }
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: var(--bg-dark);
-        color: var(--text-light);
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        overflow-x: hidden;
+    ];
+
+    const DEFAULT_MESSAGES = {
+      'conv-welcome': [
+        {
+          id: 'msg-welcome-1',
+          conversationId: 'conv-welcome',
+          role: 'assistant',
+          content: `Hey there! I'm **Aura**, your personal AI companion, friend, and guide. 🌟
+
+I'm here whenever you want to:
+- 💬 **Have a genuine chat** about your day, dreams, or whatever's on your mind.
+- 📚 **Study or understand complex concepts** with simple, intuitive explanations.
+- 💻 **Write, refactor, or debug code** together like an experienced dev partner.
+- 🎵 **Sing a song for you** or lift your mood with custom tunes and music.
+- 🧠 **Remember things that matter to you** (like your interests, goals, and style) so our chats get richer over time.
+
+How are you feeling today? Tell me what's on your mind! ✨`,
+          timestamp: new Date().toISOString(),
+          detectedMood: 'happy',
+        }
+      ]
+    };
+
+    // ==========================================
+    // 2. MOOD & AI COMPANION ENGINE
+    // ==========================================
+    function detectMood(text) {
+      const lower = text.toLowerCase();
+      if (/\b(sad|depressed|unhappy|crying|tears|heartbroken|down|gloomy|lonely|empty|miss|hopeless|painful|feeling low|mood kharab|udas|rona|dard)\b/.test(lower)) {
+        return /\b(lonely|alone|nobody to talk to)\b/.test(lower) ? 'lonely' : 'sad';
       }
-      #app-loader {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background-color: var(--bg-dark);
-        z-index: 9999;
-        transition: opacity 0.3s ease-out;
+      if (/\b(stressed|burnout|overwhelmed|exhausted|pressure|deadline|panicking|headache|tension|pareshan|dimag kharab)\b/.test(lower)) return 'stressed';
+      if (/\b(angry|furious|annoyed|irritated|mad|hate|pissed|rage|gussa)\b/.test(lower)) return 'angry';
+      if (/\b(excited|yay|hurray|omg|awesome|amazing|fantastic|super happy|celebrate|won|passed|promoted|crushed it|party|khushi|mazza)\b/.test(lower) || /(!{2,}|\bwow\b)/.test(lower)) return 'excited';
+      if (/\b(anxious|nervous|scared|fear|worried|dreading|interview tomorrow|exam tomorrow|darr)\b/.test(lower)) return 'anxious';
+      if (/\b(confused|don't understand|how does|what is|why is|explain|stuck|samajh nahi aaya)\b/.test(lower) || /\?{2,}/.test(lower)) return 'confused';
+      if (/\b(happy|great|good day|feeling good|blessed|cheerful|smiling|love|enjoying|accha)\b/.test(lower)) return 'happy';
+      return 'neutral';
+    }
+
+    function generateCompanionReply(userText, persona, detectedMood, memories) {
+      const lower = userText.toLowerCase();
+
+      // Memory Extraction
+      const newMemories = [];
+      const nameMatch = userText.match(/\b(?:my name is|i am|call me|naam hai)\s+([A-Za-z]+)\b/i);
+      if (nameMatch && nameMatch[1]) {
+        newMemories.push({ category: 'fact', content: `User's name is ${nameMatch[1]}`, importance: 5, tags: ['name'] });
       }
-      .loader-orb {
-        width: 64px;
-        height: 64px;
-        border-radius: 20px;
-        background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
-        box-shadow: 0 0 35px rgba(99, 102, 241, 0.45);
-        animation: orb-pulse 2s ease-in-out infinite alternate;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      const likeMatch = userText.match(/\b(?:i love|i like|i really enjoy|fan of)\s+([^.,!]+)/i);
+      if (likeMatch && likeMatch[1]) {
+        newMemories.push({ category: 'preference', content: `Enjoys ${likeMatch[1].trim()}`, importance: 4, tags: ['likes'] });
       }
-      .loader-text {
-        margin-top: 18px;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 700;
-        font-size: 18px;
-        letter-spacing: -0.02em;
-        background: linear-gradient(90deg, #818cf8, #c084fc, #fb7185);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+
+      // Sing for me / Music detection
+      if (lower.includes('sing') || lower.includes('song') || lower.includes('music') || lower.includes('gana') || lower.includes('gaana') || (detectedMood === 'sad' && lower.includes('mood'))) {
+        const isHindi = /mood|kharab|acha|sunao|chal|dard|thoda/i.test(lower);
+        const songData = {
+          id: `song-${Date.now()}`,
+          title: isHindi ? 'Roshni Ki Lehar (A Ray of Light)' : 'Clear Skies Ahead',
+          mood: detectedMood,
+          genre: detectedMood === 'sad' ? 'lofi' : 'uplifting',
+          tempo: detectedMood === 'sad' ? 74 : 108,
+          chords: ['Cmaj7', 'Am7', 'Dm7', 'G7'],
+          lyrics: isHindi ? [
+            'Dheere se dhalegi yeh raat bhi,',
+            'Sitaron mein likhi hai nayi baat bhi.',
+            'Hausla rakh mere dost tu yahan,',
+            'Kal phir sajega yeh saara jahan ❤️'
+          ] : [
+            'Through the quiet dusk and steady rain,',
+            'Every cloudy hour will fade again.',
+            'Take a breath, my friend, and hold on tight,',
+            'Tomorrow greets you with a warmer light ✨'
+          ],
+          emotionSummary: isHindi ? 'Ek sukoon bhari original lofi dhun dil ko sukoon dene ke liye.' : 'An original soothing acoustic melody crafted just for you.',
+          createdDate: new Date().toISOString()
+        };
+
+        const content = isHindi
+          ? `Chal thoda mood better karte hain ❤️\n\nMain tumhare liye ek chhota sa original song compose aur perform kar raha hoon:\n\n🎵 **${songData.title}** (*${songData.genre.toUpperCase()} • ${songData.tempo} BPM*)\n\n> *"Dheere se dhalegi yeh raat bhi,\n> Sitaron mein likhi hai nayi baat bhi.\n> Hausla rakh mere dost tu yahan,\n> Kal phir sajega yeh saara jahan"*\n\nClick below on the interactive player to listen to the synthesized chord progression & melody! Main hamesha tumhare saath hoon. ✨`
+          : `Hey, let's lift your spirits up a bit ❤️\n\nI composed a special original melody and acoustic song just for you:\n\n🎵 **${songData.title}** (*${songData.genre.toUpperCase()} • ${songData.tempo} BPM*)\n\n> *"Through the quiet dusk and steady rain,\n> Every cloudy hour will fade again.\n> Take a breath, my friend, and hold on tight,\n> Tomorrow greets you with a warmer light"*\n\nClick the interactive player below to hear the melody synthesized live! You're stronger than you think. ✨`;
+
+        return { content, detectedMood, songData, newMemories };
       }
-      .loader-sub {
-        font-size: 12px;
-        color: #94a3b8;
-        margin-top: 4px;
+
+      // Coding Mode
+      if (persona === 'coding' || lower.includes('code') || lower.includes('typescript') || lower.includes('react') || lower.includes('function') || lower.includes('debug')) {
+        return {
+          content: `Here is a clean, robust, and production-ready solution for you:\n\n\`\`\`typescript\n// Generic type-safe helper with exponential backoff\nexport async function fetchWithRetry<T>(\n  url: string,\n  retries = 3,\n  delayMs = 500\n): Promise<T> {\n  for (let attempt = 1; attempt <= retries; attempt++) {\n    try {\n      const res = await fetch(url);\n      if (!res.ok) throw new Error(\`HTTP \${res.status}\`);\n      return await res.json();\n    } catch (err) {\n      if (attempt === retries) throw err;\n      await new Promise((r) => setTimeout(r, delayMs * Math.pow(2, attempt - 1)));\n    }\n  }\n  throw new Error('All retry attempts failed');\n}\n\`\`\`\n\n### Why this approach works:\n1. **Exponential Backoff**: Prevents overloading the server.\n2. **Type Safety**: Returns typed data \`<T>\`.\n3. **Resilience**: Automatically recovers from intermittent network hiccups.\n\nLet me know if you want me to write unit tests or adapt this for your setup! 💻`,
+          detectedMood,
+          newMemories
+        };
       }
-      @keyframes orb-pulse {
-        0% { transform: scale(0.95); filter: blur(0px); }
-        100% { transform: scale(1.08); filter: blur(2px); box-shadow: 0 0 50px rgba(168, 85, 247, 0.6); }
+
+      // Study Mode
+      if (persona === 'study' || lower.includes('explain') || lower.includes('study') || lower.includes('how does')) {
+        return {
+          content: `Let's break this down into crystal-clear concepts! 📚\n\n### 1. The Core Idea\nThink of this like an organized library system: instead of checking thousands of shelves randomly, an indexed map gives you the exact location in milliseconds.\n\n### 2. Step-by-Step Breakdown\n- **Input**: Raw data is gathered and structured into standardized tokens.\n- **Process**: Mathematical weights and relationships are evaluated.\n- **Output**: The optimal result is generated and verified.\n\n> **Memory Hook**: *Simplify first, optimize second, and always test edge cases.*\n\nWould you like a quick 2-question quiz to test your recall on this? 🎯`,
+          detectedMood,
+          newMemories
+        };
       }
-    </style>
-  </head>
-  <body class="bg-zinc-950 text-zinc-100 min-h-screen">
-    <!-- Application Mount Points for React and Next.js -->
-    <div id="root">
-      <div id="app-loader">
-        <div class="loader-orb">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-          </svg>
+
+      // Emotional Care
+      if (detectedMood === 'sad' || detectedMood === 'stressed' || detectedMood === 'lonely') {
+        return {
+          content: `I hear you, and I'm really sorry things feel heavy right now. 🫂\n\nFirst, take a slow, gentle breath. You don't have to figure everything out in this single moment. Bad days are tough, but they do not define your journey.\n\nI'm right here with you. Do you want to vent about what happened, brainstorm solutions together, or would you like me to sing a gentle melody to help you relax? ❤️\n\n*(Reminder: If you ever feel in crisis, confidential support is always available: Call 988 in US/CA or 91-9820466726 in India).*`,
+          detectedMood,
+          newMemories
+        };
+      }
+
+      if (detectedMood === 'excited') {
+        return {
+          content: `YESSS! That is incredible news! 🚀🎉\n\nI am so hyped for you! Seeing your hard work pay off is such a rewarding feeling. Tell me all the details—what was the best highlight so far? Let's celebrate! ✨🔥`,
+          detectedMood,
+          newMemories
+        };
+      }
+
+      return {
+        content: `Hey friend! 🌟\n\n${memories.length > 0 ? `I'm remembering our context about *${memories[0].content}*—` : ''}I'm right here for whatever you need today. Whether you want to explore a new idea, study a tough subject, write code, or just talk about your day, I'm listening.\n\nWhat would you like to explore together? ✨`,
+        detectedMood,
+        newMemories
+      };
+    }
+
+    // ==========================================
+    // 3. WEB AUDIO SYNTHESIZER
+    // ==========================================
+    const NOTE_FREQS = { C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.0, A3: 220.0, B3: 246.94, C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.0, A4: 440.0, B4: 493.88, C5: 523.25 };
+    const CHORD_NOTES = {
+      Cmaj7: ['C3', 'G3', 'B3', 'E4'],
+      Am7: ['A3', 'E4', 'G4', 'C5'],
+      Dm7: ['D3', 'A3', 'C4', 'F4'],
+      G7: ['G3', 'D4', 'F4', 'B4'],
+    };
+
+    class WebAudioPlayer {
+      constructor(onState) {
+        this.ctx = null;
+        this.isPlaying = false;
+        this.onState = onState;
+        this.timer = null;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioCtx();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      playTone(freq, dur = 0.6) {
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.12, this.ctx.currentTime + 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + dur);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + dur + 0.05);
+      }
+      playSong(song, sing = true) {
+        this.init();
+        this.stop();
+        this.isPlaying = true;
+        const chords = song.chords || ['Cmaj7', 'Am7', 'Dm7', 'G7'];
+        const chordDur = (60 / song.tempo) * 2;
+
+        if (sing && 'speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const ut = new SpeechSynthesisUtterance(song.lyrics.join('. '));
+          ut.rate = 0.88;
+          ut.pitch = 1.15;
+          window.speechSynthesis.speak(ut);
+        }
+
+        let idx = 0;
+        const loop = () => {
+          if (!this.isPlaying) return;
+          const chord = chords[idx % chords.length];
+          const notes = CHORD_NOTES[chord] || ['C3', 'E4', 'G4'];
+          notes.forEach((n, i) => {
+            setTimeout(() => {
+              if (this.isPlaying) this.playTone(NOTE_FREQS[n] || 261, chordDur * 0.9);
+            }, i * 60);
+          });
+          this.onState?.(true, idx % chords.length);
+          idx++;
+          if (idx < chords.length * 3 && this.isPlaying) {
+            this.timer = setTimeout(loop, chordDur * 1000);
+          } else {
+            this.stop();
+          }
+        };
+        loop();
+      }
+      stop() {
+        this.isPlaying = false;
+        if (this.timer) clearTimeout(this.timer);
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        this.onState?.(false, 0);
+      }
+    }
+
+    // ==========================================
+    // 4. UI COMPONENTS
+    // ==========================================
+
+    // Waveform Visualizer
+    function WaveformVisualizer({ isPlaying }) {
+      const canvasRef = useRef(null);
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let anim;
+        let phase = 0;
+        const render = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          if (!isPlaying) {
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            return;
+          }
+          phase += 0.08;
+          const bars = 28;
+          const w = canvas.width / bars;
+          for (let i = 0; i < bars; i++) {
+            const h = Math.max(6, Math.abs(Math.sin(phase + i * 0.35)) * (canvas.height * 0.85));
+            const x = i * w + w * 0.2;
+            const y = (canvas.height - h) / 2;
+            const grad = ctx.createLinearGradient(0, y, 0, y + h);
+            grad.addColorStop(0, '#f43f5e');
+            grad.addColorStop(0.5, '#8b5cf6');
+            grad.addColorStop(1, '#06b6d4');
+            ctx.fillStyle = grad;
+            ctx.fillRect(x, y, w * 0.6, h);
+          }
+          anim = requestAnimationFrame(render);
+        };
+        render();
+        return () => cancelAnimationFrame(anim);
+      }, [isPlaying]);
+
+      return (
+        <div className="w-full overflow-hidden rounded-xl bg-zinc-950/80 p-2 border border-white/5">
+          <canvas ref={canvasRef} width={360} height={52} className="w-full h-full block" />
         </div>
-        <div class="loader-text">Aura AI</div>
-        <div class="loader-sub">Loading your personal companion...</div>
-      </div>
-    </div>
+      );
+    }
 
-    <!-- Main React Entry Point -->
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    // Music Player Card
+    function MusicPlayerCard({ song }) {
+      const [isPlaying, setIsPlaying] = useState(false);
+      const [currentChord, setCurrentChord] = useState(0);
+      const [sing, setSing] = useState(true);
+      const playerRef = useRef(null);
+
+      useEffect(() => {
+        playerRef.current = new WebAudioPlayer((playing, chordIdx) => {
+          setIsPlaying(playing);
+          setCurrentChord(chordIdx);
+        });
+        return () => playerRef.current?.stop();
+      }, []);
+
+      const togglePlay = () => {
+        if (isPlaying) {
+          playerRef.current?.stop();
+        } else {
+          playerRef.current?.playSong(song, sing);
+        }
+      };
+
+      const moodMeta = MOOD_META[song.mood] || MOOD_META.neutral;
+
+      return (
+        <div className="my-3 rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-indigo-950/40 via-purple-950/30 to-zinc-950/80 p-4 shadow-xl">
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="font-semibold text-zinc-100 text-sm">{song.title}</h4>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full border ${moodMeta.bg} ${moodMeta.color} ${moodMeta.border}`}>
+                  {moodMeta.emoji} {song.genre.toUpperCase()}
+                </span>
+              </div>
+              <p className="text-[11px] text-zinc-400 mt-0.5">{song.emotionSummary}</p>
+            </div>
+            <button
+              onClick={togglePlay}
+              className="p-3 rounded-full bg-gradient-to-r from-violet-600 to-rose-600 text-white shadow-lg active:scale-95 transition-transform"
+            >
+              {isPlaying ? '⏸' : '▶'}
+            </button>
+          </div>
+
+          <WaveformVisualizer isPlaying={isPlaying} />
+
+          <div className="flex items-center gap-2 my-3 overflow-x-auto text-xs font-mono">
+            <span className="text-zinc-400">Chords:</span>
+            {song.chords.map((c, i) => (
+              <span key={i} className={`px-2 py-0.5 rounded border transition-all ${isPlaying && currentChord === i ? 'bg-indigo-500 text-white font-bold scale-105' : 'bg-zinc-800 text-zinc-300 border-zinc-700'}`}>
+                {c}
+              </span>
+            ))}
+            <span className="text-zinc-500 ml-auto">{song.tempo} BPM</span>
+          </div>
+
+          <div className="rounded-xl bg-zinc-900/80 border border-zinc-800 p-3 text-xs text-zinc-300 space-y-1">
+            <div className="flex items-center justify-between text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">
+              <span>Original Poetic Lyrics</span>
+              <button onClick={() => setSing(!sing)} className="text-rose-400 hover:underline">
+                Vocals: {sing ? 'ON' : 'OFF'}
+              </button>
+            </div>
+            {song.lyrics.map((l, idx) => (
+              <p key={idx} className="italic text-zinc-200">"{l}"</p>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Glowing Audio Orb for Voice Call
+    function AudioOrb({ isListening, isSpeaking }) {
+      const canvasRef = useRef(null);
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let anim;
+        let angle = 0;
+        const render = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const cx = canvas.width / 2;
+          const cy = canvas.height / 2;
+          const r = 60;
+          angle += 0.04;
+
+          const grad = ctx.createRadialGradient(cx, cy, r * 0.5, cx, cy, r * 2.2);
+          grad.addColorStop(0, isSpeaking ? 'rgba(244, 63, 94, 0.6)' : 'rgba(99, 102, 241, 0.5)');
+          grad.addColorStop(1, 'transparent');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(cx, cy, r * 2.2, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.beginPath();
+          for (let i = 0; i <= 64; i++) {
+            const theta = (i / 64) * Math.PI * 2;
+            const wave = Math.sin(theta * 6 + angle * 2) * Math.cos(theta * 4 - angle);
+            const intensity = isSpeaking ? 14 : isListening ? 8 : 3;
+            const rad = r + wave * intensity;
+            const x = cx + Math.cos(theta) * rad;
+            const y = cy + Math.sin(theta) * rad;
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          const innerGrad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+          innerGrad.addColorStop(0, '#6366f1');
+          innerGrad.addColorStop(0.5, '#a855f7');
+          innerGrad.addColorStop(1, '#ec4899');
+          ctx.fillStyle = innerGrad;
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          anim = requestAnimationFrame(render);
+        };
+        render();
+        return () => cancelAnimationFrame(anim);
+      }, [isListening, isSpeaking]);
+
+      return <canvas ref={canvasRef} width={300} height={300} className="w-64 h-64 block mx-auto" />;
+    }
+
+    // ==========================================
+    // 5. MASTER CHAT APPLICATION
+    // ==========================================
+    function App() {
+      const [conversations, setConversations] = useState(() => {
+        try {
+          const saved = localStorage.getItem('aura_conversations');
+          return saved ? JSON.parse(saved) : DEFAULT_CONVERSATIONS;
+        } catch { return DEFAULT_CONVERSATIONS; }
+      });
+      const [activeConvId, setActiveConvId] = useState(() => conversations[0]?.id || 'conv-welcome');
+      const [messages, setMessages] = useState(() => {
+        try {
+          const saved = localStorage.getItem(`aura_msgs_${activeConvId}`);
+          return saved ? JSON.parse(saved) : (DEFAULT_MESSAGES[activeConvId] || []);
+        } catch { return DEFAULT_MESSAGES[activeConvId] || []; }
+      });
+      const [memories, setMemories] = useState(() => {
+        try {
+          const saved = localStorage.getItem('aura_memories');
+          return saved ? JSON.parse(saved) : DEFAULT_MEMORIES;
+        } catch { return DEFAULT_MEMORIES; }
+      });
+      const [persona, setPersona] = useState('friend');
+      const [input, setInput] = useState('');
+      const [isStreaming, setIsStreaming] = useState(false);
+      const [streamingText, setStreamingText] = useState('');
+      const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+      const [isMemoryModalOpen, setIsMemoryModalOpen] = useState(false);
+      const [isVoiceCallOpen, setIsVoiceCallOpen] = useState(false);
+      const [searchQuery, setSearchQuery] = useState('');
+
+      // Voice call states
+      const [isCallListening, setIsCallListening] = useState(false);
+      const [isCallSpeaking, setIsCallSpeaking] = useState(false);
+      const [callStatus, setCallStatus] = useState('Connected. Say something...');
+
+      // Save to localStorage
+      useEffect(() => {
+        try { localStorage.setItem('aura_conversations', JSON.stringify(conversations)); } catch(e){}
+      }, [conversations]);
+
+      useEffect(() => {
+        try { localStorage.setItem('aura_memories', JSON.stringify(memories)); } catch(e){}
+      }, [memories]);
+
+      useEffect(() => {
+        try {
+          const saved = localStorage.getItem(`aura_msgs_${activeConvId}`);
+          setMessages(saved ? JSON.parse(saved) : (DEFAULT_MESSAGES[activeConvId] || []));
+        } catch { setMessages([]); }
+      }, [activeConvId]);
+
+      const saveMessagesForConv = (convId, msgs) => {
+        setMessages(msgs);
+        try { localStorage.setItem(`aura_msgs_${convId}`, JSON.stringify(msgs)); } catch(e){}
+      };
+
+      const handleSendMessage = async (text) => {
+        if (!text.trim() || isStreaming) return;
+        const userMood = detectMood(text);
+        const userMsg = {
+          id: `msg-${Date.now()}`,
+          conversationId: activeConvId,
+          role: 'user',
+          content: text,
+          timestamp: new Date().toISOString(),
+          detectedMood: userMood,
+        };
+
+        const updatedMsgs = [...messages, userMsg];
+        saveMessagesForConv(activeConvId, updatedMsgs);
+        setInput('');
+        setIsStreaming(true);
+        setStreamingText('');
+
+        // Try server endpoint if available, else run client persona engine
+        let replyData = null;
+        try {
+          const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              conversationId: activeConvId,
+              messages: updatedMsgs.map(m => ({ role: m.role, content: m.content })),
+              persona,
+            })
+          });
+          if (res.ok) {
+            const reader = res.body.getReader();
+            const dec = new TextDecoder();
+            let acc = '';
+            while (true) {
+              const { value, done } = await reader.read();
+              if (done) break;
+              const chunk = dec.decode(value);
+              const lines = chunk.split('\n');
+              for (const l of lines) {
+                if (l.startsWith('data: ')) {
+                  const data = l.replace('data: ', '').trim();
+                  if (data === '[DONE]') break;
+                  try {
+                    const p = JSON.parse(data);
+                    if (p.type === 'content') { acc += p.text; setStreamingText(acc); }
+                    if (p.type === 'meta') { replyData = p; }
+                  } catch(e) { acc += data; setStreamingText(acc); }
+                }
+              }
+            }
+            replyData = { ...replyData, content: acc };
+          } else {
+            throw new Error('Fallback to client engine');
+          }
+        } catch {
+          // Client Engine Simulation
+          replyData = generateCompanionReply(text, persona, userMood, memories);
+          const words = replyData.content.split(' ');
+          let streamAcc = '';
+          for (let i = 0; i < words.length; i++) {
+            streamAcc += words[i] + (i < words.length - 1 ? ' ' : '');
+            setStreamingText(streamAcc);
+            await new Promise(r => setTimeout(r, 22));
+          }
+        }
+
+        if (replyData && replyData.newMemories) {
+          replyData.newMemories.forEach(nm => {
+            setMemories(prev => [{ ...nm, id: `mem-${Date.now()}`, createdAt: new Date().toISOString() }, ...prev]);
+          });
+        }
+
+        const assistantMsg = {
+          id: `msg-resp-${Date.now()}`,
+          conversationId: activeConvId,
+          role: 'assistant',
+          content: replyData.content,
+          timestamp: new Date().toISOString(),
+          detectedMood: replyData.detectedMood || userMood,
+          songData: replyData.songData,
+        };
+
+        const finalMsgs = [...updatedMsgs, assistantMsg];
+        saveMessagesForConv(activeConvId, finalMsgs);
+        setIsStreaming(false);
+        setStreamingText('');
+
+        // Update conv title
+        setConversations(prev => prev.map(c => c.id === activeConvId ? { ...c, title: c.messageCount === 0 ? text.slice(0, 30) + '...' : c.title, messageCount: finalMsgs.length, updatedAt: new Date().toISOString() } : c));
+      };
+
+      const handleNewChat = (mode = 'friend') => {
+        const newId = `conv-${Date.now()}`;
+        const newConv = {
+          id: newId,
+          title: 'New Conversation',
+          persona: mode,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          isPinned: false,
+          messageCount: 0,
+        };
+        setConversations([newConv, ...conversations]);
+        setActiveConvId(newId);
+        setMessages([]);
+        setPersona(mode);
+        setIsSidebarOpen(false);
+      };
+
+      const activeConv = conversations.find(c => c.id === activeConvId);
+      const personaMeta = PERSONA_META[persona] || PERSONA_META.friend;
+
+      return (
+        <div className="flex h-screen w-screen overflow-hidden bg-zinc-950 ambient-glow-mesh text-zinc-100 antialiased select-none font-sans">
+          
+          {/* Mobile Overlay */}
+          {isSidebarOpen && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden" onClick={() => setIsSidebarOpen(false)} />
+          )}
+
+          {/* SIDEBAR */}
+          <aside className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-zinc-950/95 border-r border-zinc-800/80 backdrop-blur-2xl flex flex-col transition-transform duration-300 lg:relative lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className="p-4 border-b border-zinc-800/80 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-rose-500 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/25">
+                  ✨
+                </div>
+                <div>
+                  <h1 className="font-heading font-bold text-sm text-zinc-100">Aura AI</h1>
+                  <p className="text-[10px] text-zinc-400">Your Personal Companion</p>
+                </div>
+              </div>
+              <button onClick={() => setIsSidebarOpen(false)} className="p-1.5 rounded-lg text-zinc-400 hover:text-white lg:hidden">✕</button>
+            </div>
+
+            <div className="p-3 space-y-2">
+              <button onClick={() => handleNewChat('friend')} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 text-white text-xs font-semibold shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">
+                <span>+</span> New Conversation
+              </button>
+              <div className="grid grid-cols-2 gap-2">
+                <button onClick={() => setIsMemoryModalOpen(true)} className="px-3 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 text-xs font-medium transition-all">
+                  🧠 Memories ({memories.length})
+                </button>
+                <button onClick={() => setIsVoiceCallOpen(true)} className="px-3 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-300 text-xs font-medium transition-all">
+                  📞 Voice Call
+                </button>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
+              <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider px-2">Conversations</div>
+              {conversations.map(conv => (
+                <div
+                  key={conv.id}
+                  onClick={() => { setActiveConvId(conv.id); setIsSidebarOpen(false); }}
+                  className={`flex items-center justify-between p-2.5 rounded-xl text-xs cursor-pointer transition-all ${conv.id === activeConvId ? 'bg-zinc-800 text-white font-medium border border-zinc-700' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'}`}
+                >
+                  <span className="truncate">{conv.title}</span>
+                  <button onClick={(e) => { e.stopPropagation(); setConversations(conversations.filter(c => c.id !== conv.id)); }} className="text-zinc-600 hover:text-rose-400 text-xs p-1">🗑</button>
+                </div>
+              ))}
+            </div>
+
+            <div className="p-3 border-t border-zinc-800 text-xs text-zinc-500 flex items-center justify-between">
+              <span>❤️ AI Friend &amp; Guide</span>
+              <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="text-[11px] text-zinc-500 hover:text-rose-400">Reset</button>
+            </div>
+          </aside>
+
+          {/* MAIN CHAT SCREEN */}
+          <main className="flex-1 flex flex-col h-full min-w-0 relative">
+            {/* Header */}
+            <header className="h-14 border-b border-zinc-800/80 glass-panel px-4 flex items-center justify-between z-10 shrink-0">
+              <div className="flex items-center gap-3">
+                <button onClick={() => setIsSidebarOpen(true)} className="p-2 rounded-xl text-zinc-400 hover:text-white lg:hidden">☰</button>
+                <div className="flex items-center gap-2">
+                  <span className="text-base">{personaMeta.emoji}</span>
+                  <div>
+                    <h2 className="text-xs sm:text-sm font-semibold text-zinc-100 truncate">{activeConv?.title || 'Aura AI'}</h2>
+                    <p className="text-[10px] text-zinc-400">{personaMeta.name} • {personaMeta.tag}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button onClick={() => setIsMemoryModalOpen(true)} className="px-2.5 py-1.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 text-xs">
+                  🧠 Memory ({memories.length})
+                </button>
+                <button onClick={() => setIsVoiceCallOpen(true)} className="p-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-300">
+                  📞
+                </button>
+              </div>
+            </header>
+
+            {/* Message List */}
+            <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-6 space-y-4">
+              {messages.length === 0 ? (
+                <div className="max-w-xl mx-auto text-center py-12 animate-float">
+                  <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-500 to-rose-500 mx-auto mb-4 flex items-center justify-center text-3xl shadow-2xl shadow-indigo-500/40">
+                    ✨
+                  </div>
+                  <h3 className="text-2xl font-heading font-bold text-zinc-100">Hey friend! I'm Aura.</h3>
+                  <p className="text-sm text-zinc-400 mt-2">Your companion, tutor, and coding guide. How can I help you today?</p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-6 text-left">
+                    <button onClick={() => handleSendMessage('Mera mood thoda kharab hai. Can you sing a song for me? 🎵')} className="p-3 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:border-rose-500/40 hover:bg-rose-500/5 text-xs text-zinc-300">
+                      🎵 <strong>Sing for me</strong> — Compose a mood song
+                    </button>
+                    <button onClick={() => handleSendMessage('Can you help me study? Explain how machine learning works with a simple analogy.')} className="p-3 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:border-amber-500/40 hover:bg-amber-500/5 text-xs text-zinc-300">
+                      📚 <strong>Help me study</strong> — Explain a topic
+                    </button>
+                    <button onClick={() => handleSendMessage('Let’s code! How do I implement an async retry function in TypeScript?')} className="p-3 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:border-emerald-500/40 hover:bg-emerald-500/5 text-xs text-zinc-300">
+                      💻 <strong>Help me code</strong> — Production patterns
+                    </button>
+                    <button onClick={() => handleSendMessage('I am feeling a bit stressed today. Can we talk?')} className="p-3 rounded-xl border border-zinc-800 bg-zinc-900/50 hover:border-sky-500/40 hover:bg-sky-500/5 text-xs text-zinc-300">
+                      🫂 <strong>Talk to me</strong> — Emotional support
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="max-w-3xl mx-auto space-y-4">
+                  {messages.map((m) => {
+                    const isAsst = m.role === 'assistant';
+                    const mood = m.detectedMood ? MOOD_META[m.detectedMood] : null;
+                    return (
+                      <div key={m.id} className={`p-4 rounded-2xl border transition-all ${isAsst ? 'bg-zinc-900/40 border-zinc-800/60' : 'bg-indigo-950/20 border-indigo-500/20'}`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-semibold text-zinc-200">{isAsst ? '✨ Aura' : '👤 You'}</span>
+                          {mood && (
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full border ${mood.bg} ${mood.color} ${mood.border}`}>
+                              {mood.emoji} {mood.label}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="text-sm leading-relaxed text-zinc-200 whitespace-pre-wrap">
+                          {m.content}
+                        </div>
+
+                        {m.songData && <MusicPlayerCard song={m.songData} />}
+                      </div>
+                    );
+                  })}
+
+                  {isStreaming && (
+                    <div className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60">
+                      <span className="text-xs font-semibold text-indigo-400 animate-pulse">Aura is thinking &amp; typing...</span>
+                      <p className="text-sm text-zinc-200 mt-2 whitespace-pre-wrap">{streamingText}<span className="inline-block w-1.5 h-4 ml-1 bg-indigo-400 animate-pulse" /></p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Chat Input */}
+            <div className="w-full max-w-3xl mx-auto px-4 pb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <select value={persona} onChange={(e) => setPersona(e.target.value)} className="bg-zinc-900 border border-zinc-700 text-xs rounded-xl px-2.5 py-1 text-zinc-200 outline-none">
+                  {Object.keys(PERSONA_META).map(k => (
+                    <option key={k} value={k}>{PERSONA_META[k].emoji} {PERSONA_META[k].name}</option>
+                  ))}
+                </select>
+
+                <button onClick={() => handleSendMessage('Mera mood thoda low hai. Can you sing a song for me? 🎵')} className="px-3 py-1 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-medium hover:bg-rose-500/20">
+                  🎵 Sing for Me
+                </button>
+              </div>
+
+              <div className="relative rounded-2xl border border-zinc-700/80 bg-zinc-900/90 shadow-2xl focus-within:border-indigo-500">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(input); } }}
+                  placeholder="Message Aura... (Press Enter to send)"
+                  rows={2}
+                  className="w-full px-4 pt-3 pb-10 bg-transparent text-sm text-zinc-100 placeholder-zinc-500 outline-none resize-none"
+                />
+                <div className="absolute bottom-2.5 right-3 flex items-center gap-2">
+                  <button onClick={() => handleSendMessage(input)} disabled={!input.trim()} className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-semibold shadow-md disabled:opacity-40">
+                    Send ➔
+                  </button>
+                </div>
+              </div>
+            </div>
+          </main>
+
+          {/* MEMORY MODAL */}
+          {isMemoryModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+              <div className="w-full max-w-lg rounded-3xl bg-zinc-950 border border-zinc-800 p-6 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                  <h3 className="font-heading font-bold text-base text-zinc-100 flex items-center gap-2">
+                    🧠 Personal Memory Hub ({memories.length})
+                  </h3>
+                  <button onClick={() => setIsMemoryModalOpen(false)} className="text-zinc-400 hover:text-white">✕</button>
+                </div>
+
+                <div className="max-h-72 overflow-y-auto space-y-2">
+                  {memories.map(m => (
+                    <div key={m.id} className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex items-start justify-between gap-2">
+                      <div>
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-medium uppercase">{m.category}</span>
+                        <p className="text-xs text-zinc-200 mt-1">{m.content}</p>
+                      </div>
+                      <button onClick={() => setMemories(memories.filter(x => x.id !== m.id))} className="text-zinc-600 hover:text-rose-400 text-xs">🗑</button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button onClick={() => setIsMemoryModalOpen(false)} className="px-4 py-1.5 rounded-xl bg-zinc-800 text-xs text-zinc-200 hover:bg-zinc-700">Close</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* VOICE CALL MODAL */}
+          {isVoiceCallOpen && (
+            <div className="fixed inset-0 z-50 flex flex-col items-center justify-between p-8 bg-zinc-950/95 backdrop-blur-2xl text-white">
+              <div className="w-full max-w-md flex items-center justify-between">
+                <h3 className="font-heading font-semibold text-sm text-zinc-200">Aura Voice Companion</h3>
+                <button onClick={() => setIsVoiceCallOpen(false)} className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-400 hover:text-white">Close</button>
+              </div>
+
+              <div className="space-y-4 text-center my-auto">
+                <AudioOrb isListening={isCallListening} isSpeaking={isCallSpeaking} />
+                <p className="text-sm font-medium text-indigo-300 animate-pulse">{callStatus}</p>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <button onClick={() => { setIsVoiceCallOpen(false); }} className="p-4 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-bold shadow-2xl active:scale-95">
+                  End Call
+                </button>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    // Mount App into root
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
 </html>
