@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:vite": "vite",
     "build": "next build",
+    "build:vite": "vite build",
+    "preview": "vite preview",
     "start": "next start",
     "lint": "next lint"
   },
@@ -25,9 +28,11 @@
     "@types/prismjs": "^1.26.5",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.2",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0"
   }
 }

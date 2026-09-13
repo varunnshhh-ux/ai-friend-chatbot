@@ -7,13 +7,12 @@ import MessageList from './MessageList';
 import ChatInput from './ChatInput';
 import MemoryModal from '../memory/MemoryModal';
 import VoiceCallModal from '../voice/VoiceCallModal';
+import { clientStorage } from '@/lib/db/clientStorage';
+import { detectMood } from '@/lib/ai/moodDetector';
+import { generateFallbackPersonaResponse } from '@/lib/ai/fallbackPersonaEngine';
 import {
   Menu,
   Download,
-  Trash2,
-  Sparkles,
-  Share2,
-  Check,
   Brain,
   Headphones,
 } from 'lucide-react';
@@ -32,7 +31,6 @@ export default function ChatContainer() {
   const [isVoiceCallOpen, setIsVoiceCallOpen] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
-  const [copiedLink, setCopiedLink] = useState(false);
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -52,45 +50,63 @@ export default function ChatContainer() {
   const fetchConversations = async () => {
     try {
       const res = await fetch('/api/conversations');
-      const data = await res.json();
-      if (data.conversations && data.conversations.length > 0) {
-        setConversations(data.conversations);
-        if (!activeConversationId) {
-          setActiveConversationId(data.conversations[0].id);
-          setCurrentPersona(data.conversations[0].persona || 'friend');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.conversations && data.conversations.length > 0) {
+          setConversations(data.conversations);
+          if (!activeConversationId) {
+            setActiveConversationId(data.conversations[0].id);
+            setCurrentPersona(data.conversations[0].persona || 'friend');
+          }
+          return;
         }
-      } else {
-        handleNewChat('friend');
       }
-    } catch (err) {
-      console.error('Failed to fetch conversations:', err);
+      throw new Error('API not available, fallback to client storage');
+    } catch {
+      // Client-side fallback storage
+      const localConvs = clientStorage.getConversations();
+      setConversations(localConvs);
+      if (localConvs.length > 0 && !activeConversationId) {
+        setActiveConversationId(localConvs[0].id);
+        setCurrentPersona(localConvs[0].persona || 'friend');
+      }
     }
   };
 
   const fetchMemories = async () => {
     try {
       const res = await fetch('/api/memories');
-      const data = await res.json();
-      if (data.memories) {
-        setMemories(data.memories);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.memories) {
+          setMemories(data.memories);
+          return;
+        }
       }
-    } catch (err) {
-      console.error('Failed to fetch memories:', err);
+      throw new Error('API not available');
+    } catch {
+      const localMems = clientStorage.getMemories();
+      setMemories(localMems);
     }
   };
 
   const fetchConversationMessages = async (convId: string) => {
     try {
       const res = await fetch(`/api/conversations/${convId}`);
-      const data = await res.json();
-      if (data.messages) {
-        setMessages(data.messages);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.messages) {
+          setMessages(data.messages);
+        }
+        if (data.conversation?.persona) {
+          setCurrentPersona(data.conversation.persona);
+        }
+        return;
       }
-      if (data.conversation?.persona) {
-        setCurrentPersona(data.conversation.persona);
-      }
-    } catch (err) {
-      console.error('Failed to fetch messages:', err);
+      throw new Error('API not available');
+    } catch {
+      const localMsgs = clientStorage.getMessages(convId);
+      setMessages(localMsgs);
     }
   };
 
@@ -107,9 +123,12 @@ export default function ChatContainer() {
       messageCount: 0,
     };
 
-    setConversations((prev) => [newConv, ...prev]);
+    const updated = [newConv, ...conversations];
+    setConversations(updated);
+    clientStorage.saveConversations(updated);
     setActiveConversationId(newId);
     setMessages([]);
+    clientStorage.saveMessages(newId, []);
     setCurrentPersona(persona);
     setIsSidebarOpen(false);
 
@@ -119,44 +138,51 @@ export default function ChatContainer() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newConv),
       });
-    } catch (err) {
-      console.error('Error creating new conversation:', err);
+    } catch {
+      // Handled via clientStorage
     }
   };
 
   const handleRenameConversation = async (id: string, newTitle: string) => {
-    setConversations((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, title: newTitle } : c))
+    const updated = conversations.map((c) =>
+      c.id === id ? { ...c, title: newTitle } : c
     );
+    setConversations(updated);
+    clientStorage.saveConversations(updated);
+
     try {
       await fetch(`/api/conversations/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: newTitle }),
       });
-    } catch (err) {
-      console.error('Failed to rename conversation:', err);
+    } catch {
+      // Handled via clientStorage
     }
   };
 
   const handleTogglePin = async (id: string, isPinned: boolean) => {
-    setConversations((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, isPinned } : c))
+    const updated = conversations.map((c) =>
+      c.id === id ? { ...c, isPinned } : c
     );
+    setConversations(updated);
+    clientStorage.saveConversations(updated);
+
     try {
       await fetch(`/api/conversations/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isPinned }),
       });
-    } catch (err) {
-      console.error('Failed to pin conversation:', err);
+    } catch {
+      // Handled via clientStorage
     }
   };
 
   const handleDeleteConversation = async (id: string) => {
     const remaining = conversations.filter((c) => c.id !== id);
     setConversations(remaining);
+    clientStorage.saveConversations(remaining);
 
     if (activeConversationId === id) {
       if (remaining.length > 0) {
@@ -168,8 +194,8 @@ export default function ChatContainer() {
 
     try {
       await fetch(`/api/conversations/${id}`, { method: 'DELETE' });
-    } catch (err) {
-      console.error('Failed to delete conversation:', err);
+    } catch {
+      // Handled via clientStorage
     }
   };
 
@@ -177,72 +203,84 @@ export default function ChatContainer() {
     if (!confirm('Are you sure you want to clear all conversation history?')) return;
     setConversations([]);
     setMessages([]);
+    clientStorage.saveConversations([]);
     handleNewChat('friend');
     try {
       await fetch('/api/conversations', { method: 'DELETE' });
-    } catch (err) {
-      console.error('Failed to clear conversations:', err);
+    } catch {
+      // Handled
     }
   };
 
   // Memory Actions
   const handleAddMemory = async (mem: Omit<MemoryItem, 'id' | 'createdAt'>) => {
+    const newMem: MemoryItem = {
+      ...mem,
+      id: `mem-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [newMem, ...memories];
+    setMemories(updated);
+    clientStorage.saveMemories(updated);
+
     try {
-      const res = await fetch('/api/memories', {
+      await fetch('/api/memories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(mem),
       });
-      const data = await res.json();
-      if (data.memory) {
-        setMemories((prev) => [data.memory, ...prev]);
-      }
-    } catch (err) {
-      console.error('Failed to add memory:', err);
+    } catch {
+      // Handled
     }
   };
 
   const handleUpdateMemory = async (id: string, updates: Partial<MemoryItem>) => {
+    const updated = memories.map((m) => (m.id === id ? { ...m, ...updates } : m));
+    setMemories(updated);
+    clientStorage.saveMemories(updated);
+
     try {
-      const res = await fetch(`/api/memories/${id}`, {
+      await fetch(`/api/memories/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
       });
-      const data = await res.json();
-      if (data.memory) {
-        setMemories((prev) => prev.map((m) => (m.id === id ? data.memory : m)));
-      }
-    } catch (err) {
-      console.error('Failed to update memory:', err);
+    } catch {
+      // Handled
     }
   };
 
   const handleDeleteMemory = async (id: string) => {
-    setMemories((prev) => prev.filter((m) => m.id !== id));
+    const updated = memories.filter((m) => m.id !== id);
+    setMemories(updated);
+    clientStorage.saveMemories(updated);
+
     try {
       await fetch(`/api/memories/${id}`, { method: 'DELETE' });
-    } catch (err) {
-      console.error('Failed to delete memory:', err);
+    } catch {
+      // Handled
     }
   };
 
   const handleClearAllMemories = async () => {
     if (!confirm('Are you sure you want to clear all personal memories?')) return;
     setMemories([]);
+    clientStorage.saveMemories([]);
     try {
       await fetch('/api/memories', { method: 'DELETE' });
-    } catch (err) {
-      console.error('Failed to clear memories:', err);
+    } catch {
+      // Handled
     }
   };
 
-  // Main Send Message Flow with Streaming
+  // Main Send Message Flow with Streaming & Client Fallback
   const handleSendMessage = async (
     content: string,
     attachment?: { name: string; type: string; dataUrl: string }
   ) => {
     if (!content.trim() && !attachment) return;
+
+    const detectedUserMood: MoodType = detectMood(content);
 
     const userMessage: ChatMessage = {
       id: `msg-${Date.now()}`,
@@ -250,13 +288,28 @@ export default function ChatContainer() {
       role: 'user',
       content,
       timestamp: new Date().toISOString(),
+      detectedMood: detectedUserMood,
       attachment,
     };
 
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
+    clientStorage.saveMessages(activeConversationId, updatedMessages);
     setIsStreaming(true);
     setStreamingContent('');
+
+    // Update conversation title if first message
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id === activeConversationId) {
+          const newTitle = c.messageCount === 0 || c.title === 'New Conversation'
+            ? content.slice(0, 32) + (content.length > 32 ? '...' : '')
+            : c.title;
+          return { ...c, title: newTitle, messageCount: updatedMessages.length, updatedAt: new Date().toISOString(), lastMood: detectedUserMood };
+        }
+        return c;
+      })
+    );
 
     abortControllerRef.current = new AbortController();
 
@@ -276,12 +329,8 @@ export default function ChatContainer() {
         signal: abortControllerRef.current.signal,
       });
 
-      if (!response.ok) {
-        throw new Error(`Chat API responded with status ${response.status}`);
-      }
-
-      if (!response.body) {
-        throw new Error('Response body is null');
+      if (!response.ok || !response.body) {
+        throw new Error('Server API unavailable, use client persona engine');
       }
 
       const reader = response.body.getReader();
@@ -303,9 +352,7 @@ export default function ChatContainer() {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const dataStr = line.replace('data: ', '').trim();
-            if (dataStr === '[DONE]') {
-              break;
-            }
+            if (dataStr === '[DONE]') break;
 
             try {
               const parsed = JSON.parse(dataStr);
@@ -316,7 +363,6 @@ export default function ChatContainer() {
                 setStreamingContent(fullAssistantText);
               }
             } catch {
-              // Raw text chunk fallback
               if (dataStr && dataStr !== '[DONE]') {
                 fullAssistantText += dataStr;
                 setStreamingContent(fullAssistantText);
@@ -332,24 +378,65 @@ export default function ChatContainer() {
         role: 'assistant',
         content: fullAssistantText,
         timestamp: new Date().toISOString(),
-        detectedMood: metaData.detectedMood,
+        detectedMood: metaData.detectedMood || detectedUserMood,
         usedMemories: metaData.usedMemories,
         songData: metaData.songData,
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
+      const finalMessages = [...updatedMessages, assistantMessage];
+      setMessages(finalMessages);
+      clientStorage.saveMessages(activeConversationId, finalMessages);
       setIsStreaming(false);
       setStreamingContent('');
 
-      // Refresh conversations & memories in background to reflect any new extracted data
       fetchConversations();
       fetchMemories();
     } catch (err: any) {
       if (err.name === 'AbortError') {
         console.log('User stopped generation');
-      } else {
-        console.error('Send message error:', err);
+        setIsStreaming(false);
+        setStreamingContent('');
+        return;
       }
+
+      // Robust Client-Side Simulation fallback when offline or deployed statically
+      console.log('Using Client-Side Persona Engine fallback...');
+      const fallbackResult = generateFallbackPersonaResponse(
+        content,
+        currentPersona,
+        detectedUserMood,
+        memories
+      );
+
+      // Auto-save any detected memories
+      if (fallbackResult.newMemories && fallbackResult.newMemories.length > 0) {
+        fallbackResult.newMemories.forEach((mem) => {
+          handleAddMemory(mem);
+        });
+      }
+
+      // Simulate streaming in browser
+      const chunks = fallbackResult.content.split(' ');
+      let streamedAcc = '';
+      for (let i = 0; i < chunks.length; i++) {
+        streamedAcc += chunks[i] + (i < chunks.length - 1 ? ' ' : '');
+        setStreamingContent(streamedAcc);
+        await new Promise((r) => setTimeout(r, 25));
+      }
+
+      const assistantMessage: ChatMessage = {
+        id: `msg-resp-${Date.now()}`,
+        conversationId: activeConversationId,
+        role: 'assistant',
+        content: fallbackResult.content,
+        timestamp: new Date().toISOString(),
+        detectedMood: fallbackResult.detectedMood,
+        songData: fallbackResult.songData,
+      };
+
+      const finalMessages = [...updatedMessages, assistantMessage];
+      setMessages(finalMessages);
+      clientStorage.saveMessages(activeConversationId, finalMessages);
       setIsStreaming(false);
       setStreamingContent('');
     }
@@ -399,31 +486,31 @@ export default function ChatContainer() {
   // Helper for voice call modal
   const handleVoiceCallSendMessage = async (text: string): Promise<string> => {
     return new Promise((resolve) => {
+      const userMood = detectMood(text);
       const userMessage: ChatMessage = {
         id: `msg-${Date.now()}`,
         conversationId: activeConversationId,
         role: 'user',
         content: text,
         timestamp: new Date().toISOString(),
+        detectedMood: userMood,
       };
-      setMessages((prev) => [...prev, userMessage]);
+      const updated = [...messages, userMessage];
+      setMessages(updated);
+      clientStorage.saveMessages(activeConversationId, updated);
 
       fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           conversationId: activeConversationId,
-          messages: [...messages, userMessage].map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
+          messages: updated.map((m) => ({ role: m.role, content: m.content })),
           persona: currentPersona,
         }),
       })
         .then(async (res) => {
-          if (!res.body) {
-            resolve("I'm here with you! What else is on your mind?");
-            return;
+          if (!res.ok || !res.body) {
+            throw new Error('API not ok');
           }
           const reader = res.body.getReader();
           const decoder = new TextDecoder();
@@ -453,12 +540,29 @@ export default function ChatContainer() {
             content: fullText,
             timestamp: new Date().toISOString(),
           };
-          setMessages((prev) => [...prev, assistantMessage]);
+          setMessages([...updated, assistantMessage]);
+          clientStorage.saveMessages(activeConversationId, [...updated, assistantMessage]);
           resolve(fullText);
         })
-        .catch((err) => {
-          console.error(err);
-          resolve("I'm right here with you!");
+        .catch(() => {
+          const fallback = generateFallbackPersonaResponse(
+            text,
+            currentPersona,
+            userMood,
+            memories
+          );
+          const assistantMessage: ChatMessage = {
+            id: `msg-resp-${Date.now()}`,
+            conversationId: activeConversationId,
+            role: 'assistant',
+            content: fallback.content,
+            timestamp: new Date().toISOString(),
+            detectedMood: fallback.detectedMood,
+            songData: fallback.songData,
+          };
+          setMessages([...updated, assistantMessage]);
+          clientStorage.saveMessages(activeConversationId, [...updated, assistantMessage]);
+          resolve(fallback.content);
         });
     });
   };

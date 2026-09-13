@@ -58,11 +58,7 @@
       rel="stylesheet"
     />
 
-    <!-- Tailwind & Global Stylesheet -->
-    <link rel="stylesheet" href="/_next/static/css/app.css" onerror="this.onerror=null;" />
-
     <style>
-      /* Fallback pre-hydration styles */
       :root {
         --bg-dark: #090d16;
         --text-light: #f1f5f9;
@@ -85,7 +81,7 @@
         justify-content: center;
         background-color: var(--bg-dark);
         z-index: 9999;
-        transition: opacity 0.4s ease-out;
+        transition: opacity 0.3s ease-out;
       }
       .loader-orb {
         width: 64px;
@@ -120,51 +116,20 @@
     </style>
   </head>
   <body class="bg-zinc-950 text-zinc-100 min-h-screen">
-    <!-- Application Mount Points for Next.js / React -->
-    <div id="__next">
-      <div id="root">
-        <!-- Initial Ambient Loader (Dismisses automatically upon React hydration) -->
-        <div id="app-loader">
-          <div class="loader-orb">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-            </svg>
-          </div>
-          <div class="loader-text">Aura AI</div>
-          <div class="loader-sub">Loading your personal companion...</div>
+    <!-- Application Mount Points for React and Next.js -->
+    <div id="root">
+      <div id="app-loader">
+        <div class="loader-orb">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+          </svg>
         </div>
+        <div class="loader-text">Aura AI</div>
+        <div class="loader-sub">Loading your personal companion...</div>
       </div>
     </div>
 
-    <!-- Progressive Enhancement Script: Cleanly dismiss fallback loader once Next.js renders -->
-    <script>
-      (function() {
-        // Auto-dismiss loader if React has rendered
-        window.addEventListener('DOMContentLoaded', function() {
-          var checkHydration = setInterval(function() {
-            var loader = document.getElementById('app-loader');
-            var nextContainer = document.getElementById('__next');
-            if (loader && nextContainer && nextContainer.children.length > 1) {
-              loader.style.opacity = '0';
-              setTimeout(function() {
-                if (loader.parentNode) loader.parentNode.removeChild(loader);
-              }, 400);
-              clearInterval(checkHydration);
-            }
-          }, 100);
-
-          // Failsafe timeout
-          setTimeout(function() {
-            var loader = document.getElementById('app-loader');
-            if (loader) {
-              loader.style.opacity = '0';
-              setTimeout(function() {
-                if (loader.parentNode) loader.parentNode.removeChild(loader);
-              }, 400);
-            }
-          }, 2500);
-        });
-      })();
-    </script>
+    <!-- Main React Entry Point -->
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
