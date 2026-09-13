@@ -78,7 +78,9 @@ ai-friend-chatbot/
 ├── tailwind.config.ts          # Tailwind styling & animations
 ├── postcss.config.mjs          # PostCSS configuration
 ├── next.config.ts              # Next.js configuration
-├── public/                     # Static assets
+├── index.html                  # Main HTML entry point & SEO metadata template
+├── public/                     # Static assets & public entry points
+│   └── index.html              # Static HTML entry point for deployment
 └── src/
     ├── app/
     │   ├── layout.tsx          # Root layout & Google Fonts
